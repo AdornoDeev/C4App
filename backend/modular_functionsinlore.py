@@ -9,7 +9,24 @@
         else:
             print('\033[36mNome do estabelecimento cadastrado com sucesso.\033[m')
             return name.title() # Return the titlename'''
-    
+
+# Validating a intenger number:
+def validate_intenger(num,tyquest):
+    """Return a valid intenger number.
+    <num> -> The itarable to be validate;
+    <tyquest> -> What is the question. Ex: true_cnpj print("Type the {tyquest} again:
+    OBS: The tyquest is only used by programmers.")"""
+    while True:
+        try:
+            num = int(num)
+        except ValueError as e:
+            print(f"""\033[31mError Code: {e}.
+                  O valor informado não é um número inteiro, tente novamente\03[m""")
+            num = input(f"Digite o {tyquest} novamente: ")
+        else:
+            return num
+
+
 # Validate char function password:
 def validate_password(password):
     """Return valid password with conditions.
@@ -47,7 +64,7 @@ def validate_password(password):
         print('\033[31mÉ necessário ao mínimo 1 letra maiúscula, tente novamente!\033[m')
         control_return = 1
     if qtdn_specchar != 1:
-        print('\033[31mÉ necessário ao mínimo 1 caracteres especial, tente novamente!\033[m')
+        print('\033[31mÉ necessário ao mínimo 1 caractere especial, tente novamente!\033[m')
         control_return = 1
 
     if control_return != 1:
@@ -81,3 +98,67 @@ def validate_mail(mail):
     else:
         print("\033[36mE-mail válido!\033[m")
         return mail
+    
+
+# Validating a true_cnpj mathematically:
+def validate_cnpj(cnpj):
+    if not cnpj.isnumeric():
+       print("\033[31mNão é permitido o dígito de símbolos, pontuações e letras. Tente novamente!\033[m")
+       return None
+    elif len (cnpj) != 14:
+        print("\033[31mUm CNPJ válido possui 14 dígitos, tente novamente.\033[m")
+        return None
+    else:
+        # Varibles:
+        multiplier = 5 # Multiplicator for the first sequence.
+        sequence_list = list()
+        true_cnpj = cnpj[0:12:]
+
+        # Validating the first digit:
+        for nums in true_cnpj:
+            sequence_list.append(int(nums) * multiplier)
+            multiplier -= 1
+            if multiplier == 1:
+                multiplier = 9
+        
+        # Adding all the numbers in the list:
+        result = sum(sequence_list)
+        
+        # Dividing the number by 11 and colecting the remainder:
+        result = result % 11
+
+        # Conditionals to the value:
+        if result < 2:
+            result = 0
+        else:
+            result = 11 - result
+        
+        true_cnpj += str(result)
+    # Validating the second digit:
+    sequence_list.clear()
+    multiplier = 6
+    for nums in true_cnpj:
+        sequence_list.append(int(nums) * multiplier)
+        multiplier -= 1
+        if multiplier == 1:
+            multiplier = 9
+            
+    # Adding all the numbers in the list:
+    result = sum(sequence_list)
+        
+    # Dividing the number by 11 and colecting the remainder:
+    result = result % 11
+
+    # Conditionals to the value:
+    if result < 2:
+        result = 0
+    else:
+        result = 11 - result
+    true_cnpj += str(result)
+    
+    if true_cnpj == cnpj:
+        print(f"\033[36mO CNPJ é válido!\033[m")
+        return cnpj
+    else:
+        print(f"\033[34mO CNPJ é inválido!\033[m")
+        return None
