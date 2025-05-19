@@ -1,21 +1,11 @@
-# Validate char function name:
-'''def validate_name(name):
-    """Return a valid name.title() with only charters.
-    <name> -> Str value iterable"""
-    while True:
-        if not name.replace(' ','').isalpha(): # Remove Spaces
-            print('\033[31mDigite apenas letras, nenhum tipo de número ou símbolo é permitido. Tente novamente!\033[m')
-            name = input('Digite o nome do estabelecimento: ') # Ask the name again if wrong.
-        else:
-            print('\033[36mNome do estabelecimento cadastrado com sucesso.\033[m')
-            return name.title() # Return the titlename'''
+import regex,os,time
 
-# Validating a intenger number:
+# Validação de um número inteiro.
 def validate_intenger(num,tyquest):
-    """Return a valid intenger number.
-    <num> -> The itarable to be validate;
-    <tyquest> -> What is the question. Ex: true_cnpj print("Type the {tyquest} again:
-    OBS: The tyquest is only used by programmers.")"""
+    """Retorna um número inteiro válido.
+    <num> -> Iterável a ser validado;
+    <tyquest> -> Sobre a questão. Ex: true_cnpj print("Type the {tyquest} again:
+    OBS: A tyquest é utilizada apenas por programadores.")"""
     while True:
         try:
             num = int(num)
@@ -26,13 +16,75 @@ def validate_intenger(num,tyquest):
         else:
             return num
 
+# Limpeza de terminal:
+def clean(sleep = 3):
+    time.sleep(sleep)
+    os.system('cls' if os.name == 'nt' else 'clear')
 
-# Validate char function password:
+# Validação de sintaxe de um email.
+def validate_mailsyntaxe(mail):
+    """Realiza a verificação de um email, retornando verdadeiro ou falso.
+    <:email:> -> E-mail a ser validado.
+    Condições: Ao mínimo um identificador, ao mínimo um @, ao mínimo 1 provedor e ao mínimo 1 domínio."""
+    pattern = regex.compile(r"([a-zA-Z0-9]+\.?)+[a-zA-Z0-9]+@([a-zA-Z0-9]+\.)+[a-zA-Z0-9]+")
+    resultado = regex.fullmatch(pattern,mail) # Realiza um fullmatch (Verificação total) com e e-mail informado a partir do padrão.
+    # Condições.
+    if resultado:
+        return True
+    else:
+        return False
+    
+# Validação de CNPJ.
+def validate_cnpj(cnpj):
+    """Realiza avalidação de um cnpj em sintaxe e dígitos verificadores.
+    <cnpj> -> str: É o CNPJ a ser validado (Deve conter 14 digitos no formato XX.XXX.XXX/XXXX-XX)."""
+
+    # CNPJ Exemplo: XX.XXX.XXX.XXX/0001-XX
+    pattern = regex.compile(r"[0-9]{2}\.[0-9]{3}\.[0-9]{3}/[0-9]{4}-[0-9]{2}") # Definindo um padrão para validação.
+    resultado = regex.fullmatch(pattern,cnpj)
+    if not resultado:
+        return False
+    else:
+        # Variables:
+        tempcnpj = regex.sub(r"\D",'',cnpj) # CNPJ Formatado com apenas números.
+        true_cnpj = tempcnpj[0:12:] # Recolhendo a primeira parte do CNPJ para verificação e validação.
+        # A função aninhada é responsávwel por calcular os dígitos válidos.
+        def calculate(multiplicador,true_cnpj):
+            multiplied_digits = list()
+            for nums in true_cnpj:
+                multiplied_digits.append(int(nums) * multiplicador)
+                multiplicador -= 1
+                if multiplicador == 1:
+                    multiplicador = 9
+            # Adcionando a soma dos numeros a lista:
+            resultado = sum(multiplied_digits)
+            # Dividindo o número por 11 e coletando o resultadoado:
+            resultado = resultado % 11
+            # Condicionais sobre o valor:
+            if resultado < 2:
+                resultado = 0
+            else:
+                resultado = 11 - resultado
+            
+            # Mundanças em variáveis:
+            true_cnpj += str(resultado)
+            return true_cnpj
+        
+        # Iterando duas vezes a função de validação passando o parâmetro pelo C.
+        for c in range(5,7):
+            true_cnpj = calculate(true_cnpj = true_cnpj, multiplicador=c)
+    
+    if true_cnpj == tempcnpj:
+        return True
+    else:
+        return False
+
+# Validação de senha.
 def validate_password(password):
-    """Return valid password with conditions.
-    <password> -> Str Value iterable.
-    Conditions:
-    At least 1 lower, At least 1 Upper, At least 6 numbers and At least 1 special char."""
+    """Obrigatóriamente valida uma senha sob condições.
+    <password> -> Valor string Itrável.
+    Condições:
+    Ao mínimo 1 minúscula, Ao mínimo um maiúscula, Ao mínimo 6 números e ao mínimo 6 caracteres especiais desconsiderando espaços."""
     password = password.replace(' ','')
     # Contadores do laço:
     qtdn_numeros = 0
@@ -68,97 +120,45 @@ def validate_password(password):
         control_return = 1
 
     if control_return != 1:
-        print('\033[36mSenha Válida!\033[m')
+        print("\033[36mSenha cadastrada com sucesso!\033[m")
+        clean()
         return password
 
-# Validate char e-mail function:
-def validate_mail(mail):
-    """return a valid e-mail with conditions.
-    <mail> -> Str value iterable.
-    Conditions:
-    It must has only one [@] in the e-mail, It must has a name before the [@]
-    and it must has a provisor with domain after the [@]"""
-    mail = mail.replace(' ','')
-        
-    qtdn_arroba = mail.count('@')
-    qtdn_ponto = mail.count('.')
-    pos_arroba = mail.find('@')
-    pos_ponto = mail.find('.')
-
-    if not qtdn_arroba == 1:
-        print("\033[31mO e-mail informado está inválido, não há ou existem mais de um (@) no e-mail informado, tente novamente!\033[m")
-    elif pos_arroba == 0:
-        print("\033[31mO e-mail informado está inválido, alguma frase ou nome deve estar antes do (@), tente novamente!\033[m")
-    elif '.' not in mail[pos_arroba::]:
-        print("\033[31mO e-mail informado está inválido, não há um (.) para identificação de domínio após o (@) no e-mail informado, tente novamente!\033[m")
-    elif pos_ponto == (pos_arroba + 1):
-        print("\033[31mO e-mail informado está inválido, um provedor deve ser informado entre o (@) e o (.), tente novamente!\033[m")
-    elif mail[-1] == '.':
-        print("\033[31mO e-mail informado está inválido, um domínio deve ser informado após o (.), tente novamente!\033[m")
+# Validação de CPF.
+def validate_cpf(cpf):
+    pattern = regex.compile(r'([0-9]{3}\.){2}[0-9]{3}-[0-9]{2}')
+    resultado = regex.fullmatch(pattern,cpf)
+    if not resultado:
+        return False
     else:
-        print("\033[36mE-mail válido!\033[m")
-        return mail
+        # Variables:
+        tempcpf = regex.sub(r"\D",'',cpf) # cpf Formatado com apenas números.
+        true_cpf= tempcpf[0:9:] # Recolhendo a primeira parte do cpf para verificação e validação.
+        # A função aninhada é responsável por calcular os dígitos válidos.
+        def calculate(multiplicador,true_cpf):
+            multiplied_digits = list()
+            for nums in true_cpf:
+                multiplied_digits.append(int(nums) * multiplicador)
+                multiplicador -= 1
+            # Adicionando a soma dos numeros a lista:
+            resultado = sum(multiplied_digits)
+            # Dividindo o número por 11 e coletando o resultado:
+            resultado = resultado % 11
+            # Condicionais sobre o valor:
+            if resultado < 2:
+                resultado = 0
+            else:
+                resultado = 11 - resultado
+
+            # Mundanças em variáveis:
+            true_cpf += str(resultado)
+            return true_cpf
+        
+        # Iterando duas vezes a função de validação passando o parâmetro pelo C.
+        for c in range(10,12):
+            true_cpf = calculate(true_cpf = true_cpf, multiplicador=c)
     
-
-# Validating a true_cnpj mathematically:
-def validate_cnpj(cnpj):
-    if not cnpj.isnumeric():
-       print("\033[31mNão é permitido o dígito de símbolos, pontuações e letras. Tente novamente!\033[m")
-       return None
-    elif len (cnpj) != 14:
-        print("\033[31mUm CNPJ válido possui 14 dígitos, tente novamente.\033[m")
-        return None
+    if true_cpf == tempcpf:
+        return True
     else:
-        # Varibles:
-        multiplier = 5 # Multiplicator for the first sequence.
-        sequence_list = list()
-        true_cnpj = cnpj[0:12:]
-
-        # Validating the first digit:
-        for nums in true_cnpj:
-            sequence_list.append(int(nums) * multiplier)
-            multiplier -= 1
-            if multiplier == 1:
-                multiplier = 9
-        
-        # Adding all the numbers in the list:
-        result = sum(sequence_list)
-        
-        # Dividing the number by 11 and colecting the remainder:
-        result = result % 11
-
-        # Conditionals to the value:
-        if result < 2:
-            result = 0
-        else:
-            result = 11 - result
-        
-        true_cnpj += str(result)
-    # Validating the second digit:
-    sequence_list.clear()
-    multiplier = 6
-    for nums in true_cnpj:
-        sequence_list.append(int(nums) * multiplier)
-        multiplier -= 1
-        if multiplier == 1:
-            multiplier = 9
-            
-    # Adding all the numbers in the list:
-    result = sum(sequence_list)
-        
-    # Dividing the number by 11 and colecting the remainder:
-    result = result % 11
-
-    # Conditionals to the value:
-    if result < 2:
-        result = 0
-    else:
-        result = 11 - result
-    true_cnpj += str(result)
-    
-    if true_cnpj == cnpj:
-        print(f"\033[36mO CNPJ é válido!\033[m")
-        return cnpj
-    else:
-        print(f"\033[34mO CNPJ é inválido!\033[m")
-        return None
+        return False
