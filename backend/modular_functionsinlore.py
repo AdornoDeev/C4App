@@ -1,5 +1,6 @@
 import regex,os,time
-
+import backend.acess.register.pj_register.pj_registerclass as classpj
+import backend.acess.register.pf_register.pf_registerclass as classpf
 # Validação de um número inteiro.
 def validate_intenger(num,tyquest):
     """Retorna um número inteiro válido.
@@ -162,3 +163,11 @@ def validate_cpf(cpf):
         return True
     else:
         return False
+
+# Criação de um usuário pj com a classe em cada módulo pessoal.    
+def create_pjuser(name,password,mail,cnpj):
+    return classpj.pj(name=name,password=password,mail=mail,cnpj=cnpj)
+
+# Criação de um usuário pf com a classe em cada módulo pessoal.
+def create_pfuser(name,password,mail,cpf):
+    return classpf.pf(name=name,password=password,mail=mail,cpf=cpf)

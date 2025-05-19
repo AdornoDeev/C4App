@@ -1,15 +1,16 @@
 import backend.modular_functionsinlore as mo
-'''
+
 # Solicitação do nome do usuário:
-nome = input("Digite seu nome: ")
+nome = input("Digite seu nome: ").title().replace(' ','')
 
 # Solicitação de senha:
-while not password:
-    password = mo.validate_password(input('Digite a senha que deseja cadastrar: '))
+senha = None
+while not senha:
+    senha = mo.validate_password(input('Digite a senha que deseja cadastrar: '))
 
 # Solicitação de E-mail.
 while True:
-    mail = input('Digite o e-mail de cadastro do estabelecimento: ')
+    mail = input('Digite seu e-mail para cadastro: ')
     resultado = mo.validate_mailsyntaxe(mail)
     if resultado:
         print('\033[36mE-mail válido!\033[m')
@@ -38,4 +39,9 @@ while True:
 O CPF deve seguir o modelo: XXX.XXX.XXX-XX;
 O CPF deve possuir 11 dígitos;
 O CPF deve possuir digitos verificadores válidos.\033[m""")
-'''
+        
+# Instanciar um usuáriopf:
+user = mo.create_pfuser(nome,senha,mail,cpf)
+print(user)
+
+# Enviar usuário para o banco de dados:
