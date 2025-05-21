@@ -1,6 +1,7 @@
 import regex,os,time
 import backend.acess.register.pj_register.pj_registerclass as classpj
 import backend.acess.register.pf_register.pf_registerclass as classpf
+
 # Validação de um número inteiro.
 def validate_intenger(num,tyquest):
     """Retorna um número inteiro válido.
@@ -22,7 +23,7 @@ def clean(sleep = 3):
     time.sleep(sleep)
     os.system('cls' if os.name == 'nt' else 'clear')
 
-# Validação de sintaxe de um email.
+# Validação de e-mail (sintaxe).
 def validate_mailsyntaxe(mail):
     """Realiza a verificação de um email, retornando verdadeiro ou falso.
     <:email:> -> E-mail a ser validado.
@@ -35,7 +36,7 @@ def validate_mailsyntaxe(mail):
     else:
         return False
     
-# Validação de CNPJ.
+# Validação de CNPJ (sintaxe e dígitos verificadores).
 def validate_cnpj(cnpj):
     """Realiza avalidação de um cnpj em sintaxe e dígitos verificadores.
     <cnpj> -> str: É o CNPJ a ser validado (Deve conter 14 digitos no formato XX.XXX.XXX/XXXX-XX)."""
@@ -80,7 +81,7 @@ def validate_cnpj(cnpj):
     else:
         return False
 
-# Validação de senha.
+# Validação de senha (sintaxe).
 def validate_password(password):
     """Obrigatóriamente valida uma senha sob condições.
     <password> -> Valor string Itrável.
@@ -121,11 +122,9 @@ def validate_password(password):
         control_return = 1
 
     if control_return != 1:
-        print("\033[36mSenha cadastrada com sucesso!\033[m")
-        clean()
         return password
 
-# Validação de CPF.
+# Validação de CPF (sintaxe e dígitos verificadores).
 def validate_cpf(cpf):
     pattern = regex.compile(r'([0-9]{3}\.){2}[0-9]{3}-[0-9]{2}')
     resultado = regex.fullmatch(pattern,cpf)
@@ -171,3 +170,12 @@ def create_pjuser(name,password,mail,cnpj):
 # Criação de um usuário pf com a classe em cada módulo pessoal.
 def create_pfuser(name,password,mail,cpf):
     return classpf.pf(name=name,password=password,mail=mail,cpf=cpf)
+
+# Validação de usuário SH (sintaxe):
+def validate_sh_id(id):
+   pattern = regex.compile('[0-9]+')
+   resultado = regex.fullmatch(pattern, id)
+   if resultado:
+       return True
+   else:
+       return False
