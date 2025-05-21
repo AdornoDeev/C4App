@@ -58,7 +58,7 @@ pf_cpf_register = execute_cpf_pf_register()
 
 
 # Instanciar um usuáriopf:
-user = mo.create_pfuser(pf_nome_register,pf_password_register,pf_mail_register,pf_cpf_register)
+user_pf_register = mo.create_pfuser(pf_nome_register,pf_password_register,pf_mail_register,pf_cpf_register)
 
 # Limpeza de terminal.
 mo.clean()
@@ -66,5 +66,5 @@ mo.clean()
 # Confirmação de valores informados (Decisão do usuário):
 
 
-# Enviar usuário para o banco de dados:
-print(pf_db.data_base)
+# Enviar usuário para o "banco de dados":
+pf_db.data_base[user_pf_register.cpf] = {'nome_pf_db':user_pf_register.name,'password_pf_db':user_pf_register.password,'mail_pf_db':user_pf_register.mail}

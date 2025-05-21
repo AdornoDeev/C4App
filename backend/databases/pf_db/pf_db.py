@@ -1,1 +1,1 @@
-data_base = {'teste':{'nome':'Fernando','idade':42,'ComidaFav':'Lasanha'}}
+data_base_pf = {}

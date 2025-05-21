@@ -3,7 +3,7 @@ class pf():
     # Inicializando atributos:
     def __init__(self,name,cpf,password,mail):
         self.name = name
-        self.cnpj = cpf
+        self.cpf = cpf
         self.password = password
         self.mail = mail
 

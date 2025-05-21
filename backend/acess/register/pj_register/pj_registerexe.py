@@ -1,5 +1,5 @@
 from backend import modular_functionsinlore as mo
-
+import backend.databases.pj_db.pj_db as pj_db
 # Solicitação do nome estabelecimento:
 def execute_name_pj_register():
     while True:
@@ -58,8 +58,9 @@ pj_cnpj_register = execute_cnpj_pj_register()
 pj_mail_register = execute_mail_pj_register()
 
 # Instanciar um usuáriopj:
-user = mo.create_pjuser(pj_nome_register,pj_password_register,pj_mail_register,pj_cnpj_register)
+user_pj_register = mo.create_pjuser(pj_nome_register,pj_password_register,pj_mail_register,pj_cnpj_register)
 
 # Confirmação de valores informados (Decisão do usuário):
 
 # Enviar usuário para o banco de dados:
+pj_db.data_base[user_pj_register.cnpj] = {'nome_pj_db':user_pj_register.name,'password_pj_db':user_pj_register.password,'mail_pj_db':user_pj_register.mail}
