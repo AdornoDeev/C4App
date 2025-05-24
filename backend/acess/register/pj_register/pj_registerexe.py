@@ -1,66 +1,34 @@
-from backend import modular_functionsinlore as mo
 import backend.databases.pj_db.pj_db as pj_db
-# Solicitação do nome estabelecimento:
-def execute_name_pj_register():
-    while True:
-        pj_nome_register = input("Digite o nome do estabelecimento: ").title().replace(' ','')
-        if pj_nome_register:
-            break
-        print('\033[31mUm nome deve ser informado, tente novamente.\033[m')
+import backend.acess.register.pj_register.pj_registerfeatures as pj_features_
+from backend.modular_functionsinlore import clean
+import subprocess
 
-def execute_password_pj_register():
-# Solicitação de senha:
-    while True:
-        pj_password_register = mo.validate_password(input('Digite a senha que deseja cadastrar: '))
-        if pj_password_register:
-            print('\033[36mFormato validado com sucesso!\033[m')
-            break
+# Utilização da função que realiza a execução de outras funções de coletas de dados.
+user_pj_register = pj_features_.create_pj_user() # Os dados são splitados em uma lista como sequência de NOME, SENHA, CNPJ E EMAIL.
 
-# Solicitação de CNPJ.
-def execute_cnpj_pj_register():
-    while True:
-        pj_cnpj_register = input('Digite os números do CNPJ seguindo modelo (XX.XXX.XXX/XXXX-XX): ')
-        pj_resultado_register = mo.validate_cnpj(pj_cnpj_register)
-        if pj_resultado_register:
-            print('\033[36mCNPJ válido!\033[m')
-            break
-        else:
-            print('\033[31mCNPJ Inválido!\033[m')
-            print("""\033[31mRegras de digitação:
-- É proibido não seguir o modelo de digitação: XX.XXX.XXX/XXXX-XX com todos os pontos, barra e traço.
-- O CNPJ deve possur 14 dígitos;
-- Os dígitos verificadores devem corresponder ao cálculo.\033[m""")
+# Limpeza de terminal.
+clean()
 
+# Confirmação de seguimento do usuário e instânciação em uma class.
+user_pj_register = pj_features_.pj_confirm_register(user_pj_register[0],user_pj_register[1],user_pj_register[2],user_pj_register[3])
 
-# Solicitação de E-mail.
-def execute_mail_pj_register():
-    while True:
-        pj_mail_register = input('Digite o e-mail de cadastro do estabelecimento: ')
-        pj_resultado_register = mo.validate_mailsyntaxe(pj_mail_register)
-        if pj_resultado_register:
-            print('\033[36mE-mail válido!\033[m')
-            mo.clean()
-            break
-        else:
-            print('E-mail inválido!')
-            print("""\033[31mRegras de digitação:
-- É proibído pontos no inicio, final e antes do @;
-- Antes do arroba deve haver um identificador;
-- Após o arroba deve haver um provedor;
-- Após o provedor deve haver um domínio;\033[m
-\033[36mModelo padrão:
-(identificafor/nome)@(provedor)(domínios/subdomínios)\033[m""")
-            
-# Executando as funções:
-pj_nome_register = execute_name_pj_register()
-pj_password_register = execute_password_pj_register()
-pj_cnpj_register = execute_cnpj_pj_register()
-pj_mail_register = execute_mail_pj_register()
+# Validação de CNPJ como identificador já cadastrado no sistema:
+while user_pj_register.cnpj in pj_db.data_base_pj:
+    print('\033[31mO CNPJ informado ja está relacionado a outro usuário, você deve cadastrar outro CNPJ.\033[m')
+    user_pj_register.cnpj = pj_features_.execute_cnpj_pj_register()
 
-# Instanciar um usuáriopj:
-user_pj_register = mo.create_pjuser(pj_nome_register,pj_password_register,pj_mail_register,pj_cnpj_register)
+# Coletando todos os e-mails cadastrados no banco de dados.
+list_mails_pj_register = list()
+for chaves in pj_db.data_base_pj:
+    list_mails_pj_register.append(pj_db.data_base_pj[chaves]['mail_pj_db'])
 
-# Confirmação de valores informados (Decisão do usuário):
+# Validando a existência de um usuário cadastrado no sistema.
+while user_pj_register.mail in list_mails_pj_register:
+    print('\033[31mO e-mail informado já está cadastrado, redefina o e-mail para continuar.\033[m')
+    user_pj_register.mail = pj_features_.execute_mail_pj_register()
 
 # Enviar usuário para o banco de dados:
-pj_db.data_base[user_pj_register.cnpj] = {'nome_pj_db':user_pj_register.name,'password_pj_db':user_pj_register.password,'mail_pj_db':user_pj_register.mail}
+pj_db.data_base_pj[user_pj_register.cnpj] = {'nome_pj_db':user_pj_register.name,'password_pj_db':user_pj_register.password,'cnpp_pj_db':user_pj_register.cnpj,'mail_pj_db':user_pj_register.mail}
+
+# Executando a página main de PJrídica:
+subprocess.run(["python", "backend/mainpages/mainpage_pj/main_pj.py"])

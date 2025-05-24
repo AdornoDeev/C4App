@@ -1,0 +1,3 @@
+product_database = {'eletrodomesticos':{
+    'Celulares':{'Iphone':8999.99,'Samsung':5444.97,'Motorola':1277.35,'Xiaomi':350.30},'Aspiradores':{'Eletrolux':250.80,'Hailux':534.31,'Brastemp':888.99},'MaquinasDeLavar':{'Eletrolux':210.63,'Hailux':480.12,'Brastemp':111.10},
+    'Fogoes':{'Brastemp':218.78,'Britânia':615.13,'Mondial':999.99},'VideosGames':{'PlayStation 3':366.90,'Playstation 4':1200.30,'Xbox One':900.11,'Xbox Series S':4500.64}},'Alimentacao':{'Chocolates':{'Laka':3.56},'Diamente Negro:':5.37}}

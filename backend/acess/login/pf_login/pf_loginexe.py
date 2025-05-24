@@ -27,4 +27,5 @@ pf_cpf_login = execute_cpf_pf_login()
 pf_password_login = execute_password_pf_login()
 
 mo.clean()
+
 # Validação dos dados no banco de dados:

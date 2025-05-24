@@ -1,7 +1,7 @@
 class pj():
     
     # Inicializando atributos:
-    def __init__(self,name,cnpj,password,mail):
+    def __init__(self,name,password,cnpj,mail):
         self.name = name
         self.cnpj = cnpj
         self.password = password

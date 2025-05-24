@@ -1,7 +1,7 @@
 class pf():
     
     # Inicializando atributos:
-    def __init__(self,name,cpf,password,mail):
+    def __init__(self,name,password,cpf,mail):
         self.name = name
         self.cpf = cpf
         self.password = password
