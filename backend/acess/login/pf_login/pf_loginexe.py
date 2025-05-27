@@ -29,7 +29,6 @@ while True:
 
             json_data_pf_log = json.dumps(pf_login_data_saved)
             clean()
-            print(json_data_pf_log)
             subprocess.run([sys.executable,'-m','backend.mainpages.mainpage_pf.main_pfexe',json_data_pf_log])
             break
         else:
